@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Todos{% endblock %}
+
+{% block content %}
+    <section id="app-container">
+        <!-- Populated by app views -->
+    </section>
+{% endblock %}
+
+{% block templates %}
+    {% include 'item.html' %}
+    {% include 'stats.html' %}
+    {% include 'login.html' %}
+    {% include 'main.html' %}
+{% endblock %}
