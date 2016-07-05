@@ -25,38 +25,39 @@ app.AppView = Backbone.View.extend({
     // collection, when items are added or changed
     initialize: function( options ) {
         this.user = options.user;
+        this.todos = new app.UserTodos([], { id: this.user.get('id') });
         this.$el.html(this.template({
-            user: this.user
+            user: this.user.get('username')
         }));
         this.allCheckbox = this.$('.toggle-all')[0];
         this.$input = this.$('.new-todo');
         this.$footer = this.$('.footer');
         this.$main = this.$('.main');
 
-        this.listenTo(app.Todos, 'add', this.addOne);
-        this.listenTo(app.Todos, 'reset', this.addAll);
+        this.listenTo(this.todos, 'add', this.addOne);
+        this.listenTo(this.todos, 'reset', this.addAll);
 
-        this.listenTo(app.Todos, 'change:completed', this.filterOne);
-        this.listenTo(app.Todos, 'filter', this.filterAll);
-        this.listenTo(app.Todos, 'all', this.render);
-        app.Todos.fetch();
+        this.listenTo(this.todos, 'change:completed', this.filterOne);
+        this.listenTo(this.todos, 'filter', this.filterAll);
+        this.listenTo(this.todos, 'all', this.render);
+        this.todos.fetch();
         this.addAll();
     },
 
     // re-rendering the app just means refreshing the statistics -- the rest
     // of the app doesn't change
     render: function() {
-        var completed = app.Todos.completed().length;
-        var remaining = app.Todos.remaining().length;
+        var completed = this.todos.completed().length;
+        var remaining = this.todos.remaining().length;
 
-        if( app.Todos.length ) {
+        if( this.todos.length ) {
             this.$main.show();
             this.$footer.show();
 
             this.$footer.html(this.statsTemplate({
                 completed: completed,
                 remaining: remaining,
-                user: this.user
+                user: this.user.get('username')
             }));
 
             this.$('.filters li a')
@@ -83,7 +84,7 @@ app.AppView = Backbone.View.extend({
     addAll: function() {
         console.log('adding all');
         this.$('.todo-list').html('');
-        app.Todos.each(this.addOne, this);
+        this.todos.each(this.addOne, this);
     },
 
     filterOne: function(todo) {
@@ -91,7 +92,7 @@ app.AppView = Backbone.View.extend({
     },
 
     filterAll: function() {
-        app.Todos.each(this.filterOne, this);
+        this.todos.each(this.filterOne, this);
     },
 
     // generate the attributes for a new todo item
@@ -109,20 +110,20 @@ app.AppView = Backbone.View.extend({
             return;
         }
 
-        app.Todos.create( this.newAttributes() );
+        this.todos.create( this.newAttributes() );
         this.$input.val('');
     },
 
     // clear all completed todo items, destroying their models
     clearCompleted: function() {
-        _.invoke(app.Todos.completed(), 'destroy');
+        _.invoke(this.todos.completed(), 'destroy');
         return false;
     },
 
     toggleAllComplete: function() {
         var completed = this.allCheckbox.checked;
         console.log(completed);
-        app.Todos.each(function( todo ) {
+        this.todos.each(function( todo ) {
             todo.save({
                 'completed': completed
             });

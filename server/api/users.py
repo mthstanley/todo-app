@@ -25,6 +25,16 @@ def get_user(user_id):
     return jsonify(user.to_json())
 
 
+@api.route('/users/<int:user_id>/todos', methods=['GET'])
+@auth.login_required
+def get_user_todos(user_id):
+    if not g.current_user.id == user_id:
+        abort(403)
+    user = User.query.get(user_id)
+    return jsonify(todos=[todo.to_json() for todo in user.todos])
+
+
+
 @api.route('/users', methods=['POST'])
 @auth.login_required
 def new_user():

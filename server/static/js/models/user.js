@@ -14,5 +14,7 @@ app.User = Backbone.Model.extend({
         username: ''
     },
 
-    url: '/users'
+    url: function () {
+        return app.API + '/users';
+    }
 });

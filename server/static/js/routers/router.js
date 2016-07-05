@@ -25,13 +25,13 @@ app.TodoRouter = Backbone.Router.extend({
     },
 
     index: function ( user, filter ) {
-        if (app.session.get('loggedIn')){
-            newView = new app.AppView({user: user});
+        if (app.session.get('loggedIn') && app.session.get('user').get('username') === user){
+            newView = new app.AppView({user: app.session.get('user')});
             ViewManager.showView(newView);
             //newView.addAll();
             console.log('user: ' + user);
             console.log('filter: ' + filter);
-            this.setFilter(filter);
+            this.setFilter(filter, newView.todos);
         } else {
             app.router.navigate('//login', {trigger: true});
         }
@@ -41,7 +41,7 @@ app.TodoRouter = Backbone.Router.extend({
         ViewManager.showView(new app.LoginView());
     },
 
-    setFilter: function ( param ) {
+    setFilter: function ( param, todos ) {
         // set the current filter to be used
         if (param) {
             param = param.substring(1).trim();
@@ -51,7 +51,7 @@ app.TodoRouter = Backbone.Router.extend({
 
         // trigger a collection filter event, causing hiding/unhiding
         // of todo view items
-        app.Todos.trigger('filter');
+        todos.trigger('filter');
     },
 
     defaultRoute: function (route) {

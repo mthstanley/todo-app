@@ -31,6 +31,10 @@ button, input[type="checkbox"] {
     outline: none;
 }
 
+.error {
+    color: red;
+}
+
 .todoapp {
     position: relative;
 }
