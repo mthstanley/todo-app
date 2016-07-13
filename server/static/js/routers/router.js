@@ -13,7 +13,7 @@ var ViewManager = {
             this.currentView.remove();
         }
         this.currentView = view;
-        return this.container.html(view.render().el);
+        return this.container.html(view.render().$el.addClass('app-content'));
     }
 };
 
@@ -21,6 +21,7 @@ app.TodoRouter = Backbone.Router.extend({
     routes: {
         ':user/todos*filter': 'index',
         'login': 'login',
+        'signup': 'signup',
         '*path': 'defaultRoute'
     },
 
@@ -41,6 +42,10 @@ app.TodoRouter = Backbone.Router.extend({
         ViewManager.showView(new app.LoginView());
     },
 
+    signup: function () {
+        ViewManager.showView(new app.SignupView());
+    },
+
     setFilter: function ( param, todos ) {
         // set the current filter to be used
         if (param) {
@@ -56,7 +61,7 @@ app.TodoRouter = Backbone.Router.extend({
 
     defaultRoute: function (route) {
         console.log('route:' + route);
-        this.login();
+        this.navigate('//login', {trigger: true});
     }
 });
 

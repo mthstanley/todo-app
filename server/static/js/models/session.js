@@ -28,6 +28,28 @@ app.Session = Backbone.Model.extend({
         return this.get('authToken')+':unused';
     },
 
+    signup: function ( opts ) {
+        var self = this;
+        return $.ajax({
+            url: app.API + '/users',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({
+                'username': opts.username,
+                'password': opts.password
+            }), 
+            success: function (res) {
+                console.log(res);
+                self.set({userID: res.id});
+                self.updateSessionUser(res);
+            },
+            error: function (res) {
+                console.log("Woops! " + res.status + ': ' + res.statusText);
+            }
+        });
+    },
+
     login: function ( opts ) {
         var self = this;
         return $.ajax({

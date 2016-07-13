@@ -1,17 +1,16 @@
-// js/views/login.js
+// js/views/signup.js
 
 var app = app || {};
 
-// Login Page View
-// ---------------
+// Signup Page View
+// ----------------
 
-app.LoginView = Backbone.View.extend({
+app.SignupView = Backbone.View.extend({
     
-    template: _.template( $('#login-template').html() ),
+    template: _.template( $('#signup-template').html() ),
 
     events: {
-        'click #login-btn': 'loginAttempt',
-        'click #signup-btn': 'signupRedirect'
+        'click #signup-btn': 'signupAttempt'
     },
 
     initialize: function () {
@@ -32,21 +31,24 @@ app.LoginView = Backbone.View.extend({
         }
     },
 
-    loginAttempt: function () {
+    signupAttempt: function () {
         var view = this;
-        app.session.login({
+        app.session.signup({
             username: this.$usernameInput.val(),
             password: this.$passwordInput.val()
         })
         .fail(function ( error ) {
             view.displayError(error.status);
         })
-        .done(function ( data ) {
-            console.log(data);
-            console.log('logged in');
-            userRoute = '//' + app.session.get('user').get('username') + '/todos';
-            app.router.navigate(userRoute, {trigger: true});
-        });
+        .done(
+            app.session.login({        
+                username: this.$usernameInput.val(),
+                password: this.$passwordInput.val()
+            }).done(function ( data ) { 
+                userRoute = '//' + app.session.get('user').get('username') + '/todos';
+                app.router.navigate(userRoute, {trigger: true});
+            })
+        );
     },
 
     signupRedirect: function () {

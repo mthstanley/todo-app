@@ -1,4 +1,4 @@
-from flask import jsonify, request, g, abort, url_for
+from flask import jsonify, request, g, abort, url_for, make_response
 from ..models import User
 from . import api
 from .. import db
@@ -36,7 +36,7 @@ def get_user_todos(user_id):
 
 
 @api.route('/users', methods=['POST'])
-@auth.login_required
+#@auth.login_required
 def new_user():
     username = request.json.get('username')
     password = request.json.get('password')
@@ -48,5 +48,4 @@ def new_user():
     user.hash_password(password)
     db.session.add(user)
     db.session.commit()
-    return (jsonify({'username': user.username}), 201, 
-            {'Location': url_for('api.get_user', user_id=user.id, _external=True)})
+    return (jsonify(user.to_json()), 201)
