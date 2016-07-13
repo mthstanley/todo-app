@@ -1,6 +1,8 @@
 html, body {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
 }
 
 button {
@@ -29,6 +31,10 @@ body {
 
 button, input[type="checkbox"] {
     outline: none;
+}
+
+#app-container, .app-content {
+    height: 100%;
 }
 
 .error {
@@ -199,5 +205,14 @@ html .clear-completed:active {
     position: relative;
 }
 
+div.center-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-
+div.auth-box {
+    padding: 25px;
+    background-color: #eee;
+}
